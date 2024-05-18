@@ -10,54 +10,51 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
-import {
-  CaracteristicaProdutoDTO,
-  ImagemProdutoDTO,
-} from './CreateProduct.dto';
+import { ImageProductDTO, InfoProductDTO } from './CreateProduct.dto';
 
-export class AtualizaProdutoDTO {
+export class UpdateProductDTO {
   @IsUUID(undefined, { message: 'ID do produto inválido' }) //dando erro ver futuramente
   id: string;
 
   @IsUUID(undefined, { message: 'ID de usuário inválido' })
-  usuarioId: string;
+  userId: string;
 
   @IsString()
   @IsNotEmpty({ message: 'Nome do produto não pode ser vazio' })
   @IsOptional()
-  nome: string;
+  name: string;
 
   @IsNumber({ maxDecimalPlaces: 2, allowNaN: false, allowInfinity: false })
   @IsOptional()
   @Min(1, { message: 'O valor precisa ser maior que zero' })
   @IsOptional()
-  valor: number;
+  value: number;
 
   @IsNumber()
   @Min(0, { message: 'Quantidade mínima inválida' })
   @IsOptional()
-  quantidadeDisponivel: number;
+  quantityAvailable: number;
 
   @IsString()
   @IsOptional()
-  descricao: string;
+  description: string;
 
   @ValidateNested()
   @IsArray()
   @ArrayMinSize(3)
-  @Type(() => CaracteristicaProdutoDTO)
+  @Type(() => InfoProductDTO)
   @IsOptional()
-  caracteristicas: CaracteristicaProdutoDTO[];
+  info: InfoProductDTO[];
 
   @ValidateNested()
   @IsArray()
   @ArrayMinSize(1)
-  @Type(() => ImagemProdutoDTO)
+  @Type(() => ImageProductDTO)
   @IsOptional()
-  imagens: ImagemProdutoDTO[];
+  images: ImageProductDTO[];
 
   @IsString()
   @IsNotEmpty({ message: 'Categoria do produto não pode ser vazia' })
   @IsOptional()
-  categoria: string;
+  categoric: string;
 }
