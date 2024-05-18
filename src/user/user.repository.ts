@@ -17,4 +17,26 @@ export class UserRepository {
     const user = this.users.find((user) => user.email === email);
     return user !== undefined;
   }
+
+  async updateUser(id: string, data: Partial<UserEntity>) {
+    const userIndex = this.searchUserIndex(id);
+
+    this.users[userIndex] = { ...this.users[userIndex], ...data };
+    return this.users[userIndex];
+  }
+
+  async deleteUser(id: string) {
+    const userIndex = this.searchUserIndex(id);
+
+    this.users.splice(userIndex, 1);
+    return { status: 'User deleted' };
+  }
+
+  private searchUserIndex(id: string) {
+    const userIndex = this.users.findIndex((user) => user.id === id);
+
+    if (userIndex === -1) throw new Error('User not found');
+
+    return userIndex;
+  }
 }

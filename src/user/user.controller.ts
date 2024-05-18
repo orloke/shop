@@ -1,7 +1,16 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 import { UserListDto } from './dto/UserList.dto';
 import { CreateUserDto } from './dto/createUser.dto';
+import { UpdateUserDto } from './dto/updateUser.dto';
 import { UserEntity } from './user.entity';
 import { UserRepository } from './user.repository';
 
@@ -28,5 +37,24 @@ export class UserController {
       (user) => new UserListDto(user.id, user.name),
     );
     return userList;
+  }
+
+  @Put('/:id')
+  async updateUser(@Param('id') id: string, @Body() data: UpdateUserDto) {
+    const userUpdated = await this.userRepository.updateUser(id, data);
+    return userUpdated;
+  }
+
+  @Delete('/:id')
+  async deleteUser(@Param('id') id: string) {
+    try {
+      await this.userRepository.deleteUser(id);
+      return { status: 'User deleted' };
+    } catch (error) {
+      if (error.message === 'User not found') {
+        return { status: 'User not found' };
+      }
+      return { status: 'Error deleting user' };
+    }
   }
 }
