@@ -5,17 +5,17 @@ import {
   ValidatorConstraintInterface,
   registerDecorator,
 } from 'class-validator';
-import { UserRepository } from 'src/user/user.repository';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 @ValidatorConstraint({ async: true })
 export class SingleEmailValidator implements ValidatorConstraintInterface {
-  constructor(private userRepository: UserRepository) {}
+  constructor(private userService: UserService) {}
   async validate(
     value: any,
     // validationArguments?: ValidationArguments,
   ): Promise<boolean> {
-    const uniqueEmail = await this.userRepository.getUserByEmail(value);
+    const uniqueEmail = await this.userService.findUserByEmail(value);
     return !uniqueEmail;
   }
 }

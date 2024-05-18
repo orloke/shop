@@ -30,7 +30,7 @@ export class UserController {
     userEntity.password = data.password;
     userEntity.id = uuid();
 
-    this.userRepository.createUser(userEntity);
+    this.userService.createUser(userEntity);
     return { ...new UserListDto(userEntity.id, userEntity.name) };
   }
 
@@ -42,14 +42,25 @@ export class UserController {
 
   @Put('/:id')
   async updateUser(@Param('id') id: string, @Body() data: UpdateUserDto) {
-    const userUpdated = await this.userRepository.updateUser(id, data);
-    return userUpdated;
+    try {
+      const userUpdated = await this.userService.updateUser(id, data);
+      console.log(
+        '🚀 ~ UserController ~ updateUser ~ userUpdated:',
+        userUpdated,
+      );
+      return userUpdated;
+    } catch (error) {
+      if (error.message === 'User not found') {
+        return { status: 'User not found' };
+      }
+      return { status: 'Error updating user' };
+    }
   }
 
   @Delete('/:id')
   async deleteUser(@Param('id') id: string) {
     try {
-      await this.userRepository.deleteUser(id);
+      await this.userService.deleteUser(id);
       return { status: 'User deleted' };
     } catch (error) {
       if (error.message === 'User not found') {
