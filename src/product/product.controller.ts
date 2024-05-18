@@ -29,8 +29,8 @@ export class ProductController {
     product.quantity = productData.quantity;
     product.description = productData.description;
     product.categoric = productData.categoric;
-    product.info = productData.info;
-    product.images = productData.images;
+    // product.info = productData.info;
+    // product.images = productData.images;
 
     const productCreated = this.productRepository.save(product);
     return productCreated;
