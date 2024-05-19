@@ -7,11 +7,9 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { v4 as uuid } from 'uuid';
 
 import { CreateProductDTO } from './dto/CreateProduct.dto';
 import { UpdateProductDTO } from './dto/ListProduct';
-import { ProductEntity } from './product.entity';
 import { ProductRepository } from './product.repository';
 import { ProductService } from './product.service';
 
@@ -24,18 +22,7 @@ export class ProductController {
 
   @Post()
   async createProduct(@Body() productData: CreateProductDTO) {
-    const product = new ProductEntity();
-
-    product.id = uuid();
-    product.name = productData.name;
-    product.value = productData.value;
-    product.quantity = productData.quantity;
-    product.description = productData.description;
-    product.categoric = productData.categoric;
-    product.info = productData.info;
-    product.images = productData.images;
-
-    const productCreated = this.productService.createProduct(product);
+    const productCreated = this.productService.createProduct(productData);
     return productCreated;
   }
 

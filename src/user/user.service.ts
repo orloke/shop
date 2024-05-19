@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductEntity } from 'src/product/product.entity';
 import { Repository } from 'typeorm';
-import { v4 as uuid } from 'uuid';
 import { UserListDto } from './dto/UserList.dto';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
@@ -51,15 +50,14 @@ export class UserService {
     userEntity.name = data.name;
     userEntity.email = data.email;
     userEntity.password = data.password;
-    userEntity.id = uuid();
 
     const userCreated = await this.userRepository.save(data);
 
     return {
       ...new UserListDto(
-        userEntity.id,
-        userEntity.name,
-        userEntity.email,
+        userCreated.id,
+        userCreated.name,
+        userCreated.email,
         userCreated.products || [],
         userCreated.createdAt,
         userCreated.updatedAt,
