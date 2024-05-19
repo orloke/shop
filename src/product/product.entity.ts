@@ -3,14 +3,12 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { ImagesProduct } from './images-product.entity';
 import { InfosProduct } from './infos-product.entity';
-import { UserEntity } from '../user/user.entity';
 
 @Entity({ name: 'products' })
 export class ProductEntity {
@@ -44,8 +42,8 @@ export class ProductEntity {
   })
   images: ImagesProduct[];
 
-  @ManyToMany(() => UserEntity, (user) => user.products)
-  users: UserEntity[];
+  // @ManyToMany(() => UserEntity, (user) => user.products)
+  // users: UserEntity[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string;

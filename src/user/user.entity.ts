@@ -1,14 +1,13 @@
+import { OrderEntity } from '../order/order.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  JoinTable,
-  ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { ProductEntity } from '../product/product.entity';
 
 @Entity('users')
 export class UserEntity {
@@ -24,13 +23,16 @@ export class UserEntity {
   @Column({ name: 'password', length: 255, nullable: false })
   password: string;
 
-  @ManyToMany(() => ProductEntity, (product) => product.users)
-  @JoinTable({
-    name: 'users_products',
-    joinColumn: { name: 'user_id', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'product_id', referencedColumnName: 'id' },
-  })
-  products: ProductEntity[];
+  @OneToMany(() => OrderEntity, (order) => order.user)
+  orders: OrderEntity[];
+
+  // @ManyToMany(() => ProductEntity, (product) => product.users)
+  // @JoinTable({
+  //   name: 'users_products',
+  //   joinColumn: { name: 'user_id', referencedColumnName: 'id' },
+  //   inverseJoinColumn: { name: 'product_id', referencedColumnName: 'id' },
+  // })
+  // products: ProductEntity[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string;

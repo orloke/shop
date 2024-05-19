@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ProductEntity } from '../product/product.entity';
 import { UserListDto } from './dto/UserList.dto';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
@@ -12,8 +11,6 @@ export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
-    @InjectRepository(ProductEntity)
-    private readonly productRepository: Repository<ProductEntity>,
   ) {}
 
   async getUsers() {
@@ -24,7 +21,6 @@ export class UserService {
           user.id,
           user.name,
           user.email,
-          undefined,
           user.createdAt,
           user.updatedAt,
           user.deletedAt,
@@ -38,7 +34,7 @@ export class UserService {
       user.id,
       user.name,
       user.email,
-      user.products,
+      // user.products,
       user.createdAt,
       user.updatedAt,
       user.deletedAt,
@@ -58,7 +54,7 @@ export class UserService {
         userCreated.id,
         userCreated.name,
         userCreated.email,
-        userCreated.products || [],
+        // userCreated.products || [],
         userCreated.createdAt,
         userCreated.updatedAt,
         userCreated.deletedAt,
@@ -93,17 +89,17 @@ export class UserService {
     return user;
   }
 
-  async addProductsToUser(userId: string, productId: string): Promise<void> {
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-      relations: ['products'],
-    });
-    const product = await this.productRepository.findOne({
-      where: { id: productId },
-    });
-    if (user && product) {
-      user.products.push(product);
-      await this.userRepository.save(user);
-    }
-  }
+  // async addProductsToUser(userId: string, productId: string): Promise<void> {
+  //   const user = await this.userRepository.findOne({
+  //     where: { id: userId },
+  //     relations: ['products'],
+  //   });
+  //   const product = await this.productRepository.findOne({
+  //     where: { id: productId },
+  //   });
+  //   if (user && product) {
+  //     user.products.push(product);
+  //     await this.userRepository.save(user);
+  //   }
+  // }
 }
