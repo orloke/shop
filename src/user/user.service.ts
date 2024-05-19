@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductEntity } from 'src/product/product.entity';
 import { Repository } from 'typeorm';
-import { UserListDto } from './dto/UserList.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { UserEntity } from './user.entity';
 
@@ -16,11 +15,7 @@ export class UserService {
   ) {}
 
   async getUsers() {
-    const usersSave = await this.userRepository.find();
-    const listUsers = usersSave.map(
-      (user) => new UserListDto(user.id, user.name),
-    );
-    return listUsers;
+    return await this.userRepository.find();
   }
 
   async createUser(data: UserEntity) {
@@ -38,8 +33,11 @@ export class UserService {
     await this.userRepository.remove(user);
   }
 
-  private async findUser(id: string) {
-    const user = await this.userRepository.findOne({ where: { id } });
+  async findUser(id: string) {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['products'],
+    });
     if (!user) {
       throw new Error('User not found');
     }

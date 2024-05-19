@@ -26,8 +26,19 @@ export class UserController {
     userEntity.password = data.password;
     userEntity.id = uuid();
 
-    this.userService.createUser(userEntity);
-    return { ...new UserListDto(userEntity.id, userEntity.name) };
+    const userCreated = await this.userService.createUser(userEntity);
+
+    return {
+      ...new UserListDto(
+        userEntity.id,
+        userEntity.name,
+        userEntity.email,
+        userCreated.products || [],
+        userCreated.createdAt,
+        userCreated.updatedAt,
+        userCreated.deletedAt,
+      ),
+    };
   }
 
   @Post('/add-product')
@@ -52,7 +63,41 @@ export class UserController {
   @Get()
   async getUsers() {
     const usersSave = await this.userService.getUsers();
-    return usersSave;
+    const listUsers = usersSave.map(
+      (user) =>
+        new UserListDto(
+          user.id,
+          user.name,
+          user.email,
+          undefined,
+          user.createdAt,
+          user.updatedAt,
+          user.deletedAt,
+        ),
+    );
+    return listUsers;
+  }
+
+  @Get('/:id')
+  async getUserById(@Param('id') id: string) {
+    try {
+      const user = await this.userService.findUser(id);
+
+      return new UserListDto(
+        user.id,
+        user.name,
+        user.email,
+        user.products,
+        user.createdAt,
+        user.updatedAt,
+        user.deletedAt,
+      );
+    } catch (error) {
+      if (error.message === 'User not found') {
+        return { status: 'User not found' };
+      }
+      return { status: 'Error getting user' };
+    }
   }
 
   @Put('/:id')
