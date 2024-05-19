@@ -11,8 +11,11 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
+import { ProductEntity } from '../product.entity';
 
 export class InfoProductDTO {
+  id: string;
+
   @IsString()
   @IsNotEmpty({ message: 'Nome da cadasterística não pode ser vazio' })
   name: string;
@@ -20,15 +23,21 @@ export class InfoProductDTO {
   @IsString()
   @IsNotEmpty({ message: 'Descrição da característica não pode ser vazio' })
   description: string;
+
+  product: ProductEntity;
 }
 
 export class ImageProductDTO {
+  id: string;
+
   @IsUrl(undefined, { message: 'URL da imagem inválida' })
   url: string;
 
   @IsString()
   @IsNotEmpty({ message: 'Descrição da imagem não pode ser vazia' })
   description: string;
+
+  product: ProductEntity;
 }
 
 export class CreateProductDTO {
