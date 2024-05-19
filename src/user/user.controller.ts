@@ -30,6 +30,25 @@ export class UserController {
     return { ...new UserListDto(userEntity.id, userEntity.name) };
   }
 
+  @Post('/add-product')
+  async addProductsToUser(
+    @Body('userId') userId: string,
+    @Body('productId') productId: string,
+  ) {
+    try {
+      await this.userService.addProductsToUser(userId, productId);
+      return { status: 'Product added to user' };
+    } catch (error) {
+      if (error.message === 'User not found') {
+        return { status: 'User not found' };
+      }
+      if (error.message === 'Product not found') {
+        return { status: 'Product not found' };
+      }
+      return { status: 'Error adding product to user' };
+    }
+  }
+
   @Get()
   async getUsers() {
     const usersSave = await this.userService.getUsers();
@@ -40,10 +59,6 @@ export class UserController {
   async updateUser(@Param('id') id: string, @Body() data: UpdateUserDto) {
     try {
       const userUpdated = await this.userService.updateUser(id, data);
-      console.log(
-        '🚀 ~ UserController ~ updateUser ~ userUpdated:',
-        userUpdated,
-      );
       return userUpdated;
     } catch (error) {
       if (error.message === 'User not found') {

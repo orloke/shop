@@ -3,20 +3,19 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { ImagesProduct } from './images-product.entity';
 import { InfosProduct } from './infos-product.entity';
+import { UserEntity } from 'src/user/user.entity';
 
 @Entity({ name: 'products' })
 export class ProductEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-
-  @Column({ name: 'user_id', length: 100, nullable: false })
-  userId: string;
 
   @Column({ name: 'name', length: 100, nullable: false })
   name: string;
@@ -44,6 +43,9 @@ export class ProductEntity {
     eager: true,
   })
   images: ImagesProduct[];
+
+  @ManyToMany(() => UserEntity, (user) => user.products)
+  users: UserEntity[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string;

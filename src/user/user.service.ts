@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ProductEntity } from 'src/product/product.entity';
 import { Repository } from 'typeorm';
 import { UserListDto } from './dto/UserList.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
@@ -10,6 +11,8 @@ export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(ProductEntity)
+    private readonly productRepository: Repository<ProductEntity>,
   ) {}
 
   async getUsers() {
@@ -46,5 +49,19 @@ export class UserService {
   async findUserByEmail(email: string) {
     const user = await this.userRepository.findOne({ where: { email } });
     return user;
+  }
+
+  async addProductsToUser(userId: string, productId: string): Promise<void> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['products'],
+    });
+    const product = await this.productRepository.findOne({
+      where: { id: productId },
+    });
+    if (user && product) {
+      user.products.push(product);
+      await this.userRepository.save(user);
+    }
   }
 }

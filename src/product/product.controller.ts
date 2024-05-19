@@ -28,7 +28,6 @@ export class ProductController {
 
     product.id = uuid();
     product.name = productData.name;
-    product.userId = productData.userId;
     product.value = productData.value;
     product.quantity = productData.quantity;
     product.description = productData.description;

@@ -4,10 +4,12 @@ import { SingleEmailValidator } from './dto/validation/singleEmail.validator';
 import { UserController } from './user.controller';
 import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
+import { ProductEntity } from 'src/product/product.entity';
+import { ProductService } from 'src/product/product.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity])],
+  imports: [TypeOrmModule.forFeature([UserEntity, ProductEntity])],
   controllers: [UserController],
-  providers: [SingleEmailValidator, UserService],
+  providers: [SingleEmailValidator, UserService, ProductService],
 })
 export class UserModule {}
