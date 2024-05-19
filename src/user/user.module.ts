@@ -4,7 +4,7 @@ import { SingleEmailValidator } from './dto/validation/singleEmail.validator';
 import { UserController } from './user.controller';
 import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
-import { ProductEntity } from 'src/product/product.entity';
+import { ProductEntity } from '../product/product.entity';
 import { ProductService } from 'src/product/product.service';
 
 @Module({

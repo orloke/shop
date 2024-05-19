@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { ImagesProduct } from './images-product.entity';
 import { InfosProduct } from './infos-product.entity';
-import { UserEntity } from 'src/user/user.entity';
+import { UserEntity } from '../user/user.entity';
 
 @Entity({ name: 'products' })
 export class ProductEntity {
@@ -23,8 +23,8 @@ export class ProductEntity {
   @Column({ name: 'value', nullable: false })
   value: number;
 
-  @Column({ name: 'quantity', nullable: false })
-  quantity: number;
+  @Column({ name: 'quantity_available', nullable: false })
+  quantityAvailable: number;
 
   @Column({ name: 'description', length: 255, nullable: false })
   description: string;

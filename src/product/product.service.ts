@@ -16,7 +16,7 @@ export class ProductService {
 
     product.name = productData.name;
     product.value = productData.value;
-    product.quantity = productData.quantity;
+    product.quantityAvailable = productData.quantityAvailable;
     product.description = productData.description;
     product.categoric = productData.categoric;
     product.info = productData.info;
