@@ -7,11 +7,9 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { v4 as uuid } from 'uuid';
-import { UserListDto } from './dto/UserList.dto';
+
 import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
-import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
 
 @Controller('/users')
@@ -20,25 +18,7 @@ export class UserController {
 
   @Post()
   async createUser(@Body() data: CreateUserDto) {
-    const userEntity = new UserEntity();
-    userEntity.name = data.name;
-    userEntity.email = data.email;
-    userEntity.password = data.password;
-    userEntity.id = uuid();
-
-    const userCreated = await this.userService.createUser(userEntity);
-
-    return {
-      ...new UserListDto(
-        userEntity.id,
-        userEntity.name,
-        userEntity.email,
-        userCreated.products || [],
-        userCreated.createdAt,
-        userCreated.updatedAt,
-        userCreated.deletedAt,
-      ),
-    };
+    return await this.userService.createUser(data);
   }
 
   @Post('/add-product')
@@ -62,36 +42,13 @@ export class UserController {
 
   @Get()
   async getUsers() {
-    const usersSave = await this.userService.getUsers();
-    const listUsers = usersSave.map(
-      (user) =>
-        new UserListDto(
-          user.id,
-          user.name,
-          user.email,
-          undefined,
-          user.createdAt,
-          user.updatedAt,
-          user.deletedAt,
-        ),
-    );
-    return listUsers;
+    return await this.userService.getUsers();
   }
 
   @Get('/:id')
   async getUserById(@Param('id') id: string) {
     try {
-      const user = await this.userService.findUser(id);
-
-      return new UserListDto(
-        user.id,
-        user.name,
-        user.email,
-        user.products,
-        user.createdAt,
-        user.updatedAt,
-        user.deletedAt,
-      );
+      return await this.userService.getUser(id);
     } catch (error) {
       if (error.message === 'User not found') {
         return { status: 'User not found' };

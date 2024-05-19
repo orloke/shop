@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductEntity } from 'src/product/product.entity';
 import { Repository } from 'typeorm';
+import { v4 as uuid } from 'uuid';
+import { UserListDto } from './dto/UserList.dto';
+import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { UserEntity } from './user.entity';
 
@@ -15,11 +18,54 @@ export class UserService {
   ) {}
 
   async getUsers() {
-    return await this.userRepository.find();
+    const users = await this.userRepository.find();
+    return users.map(
+      (user) =>
+        new UserListDto(
+          user.id,
+          user.name,
+          user.email,
+          undefined,
+          user.createdAt,
+          user.updatedAt,
+          user.deletedAt,
+        ),
+    );
   }
 
-  async createUser(data: UserEntity) {
-    return await this.userRepository.save(data);
+  async getUser(id: string) {
+    const user = await this.findUser(id);
+    return new UserListDto(
+      user.id,
+      user.name,
+      user.email,
+      user.products,
+      user.createdAt,
+      user.updatedAt,
+      user.deletedAt,
+    );
+  }
+
+  async createUser(data: CreateUserDto) {
+    const userEntity = new UserEntity();
+    userEntity.name = data.name;
+    userEntity.email = data.email;
+    userEntity.password = data.password;
+    userEntity.id = uuid();
+
+    const userCreated = await this.userRepository.save(data);
+
+    return {
+      ...new UserListDto(
+        userEntity.id,
+        userEntity.name,
+        userEntity.email,
+        userCreated.products || [],
+        userCreated.createdAt,
+        userCreated.updatedAt,
+        userCreated.deletedAt,
+      ),
+    };
   }
 
   async updateUser(id: string, data: UpdateUserDto) {
