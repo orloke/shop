@@ -1,4 +1,3 @@
-import { UserEntity } from '../user/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -8,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { UserEntity } from '../user/user.entity';
 import { StatusOrder } from './enum/statusOrder.enum';
 
 @Entity('orders')
@@ -21,7 +21,7 @@ export class OrderEntity {
   @Column({
     name: 'status',
     enum: StatusOrder,
-    default: 'pending',
+    default: 'PROCESSING',
   })
   status: StatusOrder;
 
