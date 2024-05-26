@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderEntity } from './order.entity';
 import { OrderItemEntity } from './orderItem.entity';
+import { FindOrderDto } from './dto/find-order.dto';
 
 @Injectable()
 export class OrderService {
@@ -63,5 +64,21 @@ export class OrderService {
       }
       return { status: 'Error creating order' };
     }
+  }
+
+  async getOrderById(id: FindOrderDto['id']) {
+    console.log('🚀 ~ OrderService ~ findOrder ~ id:', id);
+    if (id) {
+      return await this.orderRepository.findOne({
+        where: { id },
+        relations: ['items', 'items.product'],
+      });
+    }
+  }
+
+  async getOrders() {
+    return await this.orderRepository.find({
+      relations: ['items', 'items.product'],
+    });
   }
 }
