@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderService } from './order.service';
 import { FindOrderDto } from './dto/find-order.dto';
+import { StatusOrder } from './enum/statusOrder.enum';
 
 @Controller('order')
 export class OrderController {
@@ -22,6 +23,14 @@ export class OrderController {
 
   @Get('/:id')
   async getOrderById(@Param() params: FindOrderDto) {
-    return this.orderService.getOrderById(params.id);
+    return this.orderService.findOrderById(params.id);
+  }
+
+  @Put('/:id')
+  async updateOrderStatus(
+    @Param() params: FindOrderDto,
+    @Query('status') status: StatusOrder,
+  ) {
+    return this.orderService.updateOrderStatus(params.id, status);
   }
 }

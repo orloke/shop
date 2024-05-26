@@ -4,9 +4,9 @@ import { ProductEntity } from 'src/product/product.entity';
 import { UserEntity } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { StatusOrder } from './enum/statusOrder.enum';
 import { OrderEntity } from './order.entity';
 import { OrderItemEntity } from './orderItem.entity';
-import { FindOrderDto } from './dto/find-order.dto';
 
 @Injectable()
 export class OrderService {
@@ -28,6 +28,17 @@ export class OrderService {
     }
     return user;
   }
+
+  async findOrderById(id: string) {
+    const order = await this.orderRepository.findOne({
+      where: { id },
+    });
+    if (!order) {
+      throw new Error('Order not found');
+    }
+    return order;
+  }
+
   async create(userId: string, createdOrder: CreateOrderDto) {
     try {
       const user = await this.findUserById(userId);
@@ -66,19 +77,21 @@ export class OrderService {
     }
   }
 
-  async getOrderById(id: FindOrderDto['id']) {
-    console.log('🚀 ~ OrderService ~ findOrder ~ id:', id);
-    if (id) {
-      return await this.orderRepository.findOne({
-        where: { id },
-        relations: ['items', 'items.product'],
-      });
-    }
-  }
-
   async getOrders() {
     return await this.orderRepository.find({
       relations: ['items', 'items.product'],
     });
+  }
+
+  async updateOrderStatus(id: string, status: StatusOrder) {
+    await this.findOrderById(id);
+    await this.orderRepository.update(id, { status });
+    return { status: 'Order updated' };
+  }
+
+  async deleteOrder(id: string) {
+    await this.findOrderById(id);
+    await this.orderRepository.delete(id);
+    return { status: 'Order deleted' };
   }
 }
