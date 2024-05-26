@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ProductEntity } from './product.entity';
 import { CreateProductDTO } from './dto/CreateProduct.dto';
+import { ProductEntity } from './product.entity';
 
 Injectable();
 export class ProductService {
@@ -29,5 +29,9 @@ export class ProductService {
 
   async getProducts() {
     return await this.productRepository.find();
+  }
+
+  async getProductById(id: string) {
+    return await this.productRepository.findOne({ where: { id } });
   }
 }

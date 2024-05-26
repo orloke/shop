@@ -1,5 +1,13 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UseInterceptors,
+} from '@nestjs/common';
 
+import { CacheInterceptor } from '@nestjs/cache-manager';
 import { CreateProductDTO } from './dto/CreateProduct.dto';
 import { ProductService } from './product.service';
 
@@ -16,5 +24,12 @@ export class ProductController {
   @Get()
   async getProducts() {
     return this.productService.getProducts();
+  }
+
+  @Get('/:id')
+  @UseInterceptors(CacheInterceptor)
+  async getProductById(@Param('id') id: string) {
+    console.log('Fetching from database');
+    return this.productService.getProductById(id);
   }
 }
