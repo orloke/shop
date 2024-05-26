@@ -22,6 +22,8 @@ export class ProductService {
     product.info = productData.info;
     product.images = productData.images;
 
+    // Object.assign(product, productData as ProductEntity);
+
     return await this.productRepository.save(product);
   }
 

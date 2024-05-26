@@ -1,8 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ProductEntity } from 'src/product/product.entity';
-import { UserEntity } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
+import { ProductEntity } from '../product/product.entity';
+import { UserEntity } from '../user/user.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { StatusOrder } from './enum/statusOrder.enum';
 import { OrderEntity } from './order.entity';
@@ -19,12 +23,12 @@ export class OrderService {
     private productRepository: Repository<ProductEntity>,
   ) {}
 
-  async findUserById(id: string) {
+  private async findUserById(id: string) {
     const user = await this.userRepository.findOne({
       where: { id },
     });
     if (!user) {
-      throw new Error('User not found');
+      throw new NotFoundException('User not found');
     }
     return user;
   }
@@ -51,10 +55,20 @@ export class OrderService {
           const products = await this.productRepository.findOne({
             where: { id: item.productId },
           });
+
+          if (!products) {
+            throw new NotFoundException('Product not found');
+          }
+
+          if (products.quantityAvailable < item.quantity) {
+            throw new BadRequestException('Product not available');
+          }
+
           const orderItem = new OrderItemEntity();
           orderItem.quantity = item.quantity;
           orderItem.salePrice = products.value;
           orderItem.product = products;
+          orderItem.product.quantityAvailable -= item.quantity;
           return orderItem;
         }),
       );
