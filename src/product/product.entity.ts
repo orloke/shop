@@ -1,3 +1,4 @@
+import { OrderItemEntity } from '../order/orderItem.entity';
 import {
   Column,
   CreateDateColumn,
@@ -44,6 +45,9 @@ export class ProductEntity {
 
   // @ManyToMany(() => UserEntity, (user) => user.products)
   // users: UserEntity[];
+
+  @OneToMany(() => OrderItemEntity, (orderItem) => orderItem.product)
+  orderItem: OrderItemEntity[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string;

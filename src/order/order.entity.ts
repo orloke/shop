@@ -4,18 +4,26 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
 import { StatusOrder } from './enum/statusOrder.enum';
+import { OrderItemEntity } from './orderItem.entity';
 
 @Entity('orders')
 export class OrderEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'amount', nullable: false })
+  @Column({
+    name: 'amount',
+    nullable: false,
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+  })
   amount: number;
 
   @Column({
@@ -27,6 +35,11 @@ export class OrderEntity {
 
   @ManyToOne(() => UserEntity, (user) => user.orders)
   user: UserEntity;
+
+  @OneToMany(() => OrderItemEntity, (item) => item.order, {
+    cascade: true,
+  })
+  items: OrderItemEntity[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string;
