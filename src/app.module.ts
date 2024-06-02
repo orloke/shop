@@ -13,6 +13,8 @@ import { AuthModule } from './modules/auth/auth.module';
   imports: [
     UserModule,
     ProductModule,
+    OrderModule,
+    AuthModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -20,7 +22,6 @@ import { AuthModule } from './modules/auth/auth.module';
       useClass: PostgresConfigService,
       inject: [PostgresConfigService],
     }),
-    OrderModule,
     CacheModule.registerAsync({
       useFactory: async () => ({
         store: await redisStore({
@@ -31,7 +32,6 @@ import { AuthModule } from './modules/auth/auth.module';
       }),
       isGlobal: true,
     }),
-    AuthModule,
   ],
 })
 export class AppModule {}
