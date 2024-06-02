@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, Matches } from 'class-validator';
 import { IsSingleEmail } from './validation/singleEmail.validator';
 
 export class CreateUserDto {
@@ -9,6 +9,9 @@ export class CreateUserDto {
   @IsSingleEmail({ message: 'Email already exists' })
   email: string;
 
-  @MinLength(6)
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W+).{6,30}$/, {
+    message:
+      'Password must have at least 8 characters and contain at least one letter and one number',
+  })
   password: string;
 }

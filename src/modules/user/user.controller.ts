@@ -8,6 +8,7 @@ import {
   Put,
 } from '@nestjs/common';
 
+import { PasswordHashPipe } from '../../resources/pipes/password-hash.pipe';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { UserService } from './user.service';
@@ -17,8 +18,14 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @Post()
-  async createUser(@Body() data: CreateUserDto) {
-    return await this.userService.createUser(data);
+  async createUser(
+    @Body() data: CreateUserDto,
+    @Body('password', PasswordHashPipe) passwordHashed: string,
+  ) {
+    return await this.userService.createUser({
+      ...data,
+      password: passwordHashed,
+    });
   }
 
   // @Post('/add-product')
