@@ -8,7 +8,7 @@ import * as bcrypt from 'bcrypt';
 import { UserService } from '../user/user.service';
 import { AuthDto } from './dto/auth.dto';
 
-interface JwtPayload {
+export interface JwtPayload {
   email: string;
   sub: string;
 }

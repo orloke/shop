@@ -6,12 +6,14 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 
 import { PasswordHashPipe } from '../../resources/pipes/password-hash.pipe';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { UserService } from './user.service';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('/users')
 export class UserController {
@@ -28,30 +30,13 @@ export class UserController {
     });
   }
 
-  // @Post('/add-product')
-  // async addProductsToUser(
-  //   @Body('userId') userId: string,
-  //   @Body('productId') productId: string,
-  // ) {
-  //   try {
-  //     await this.userService.addProductsToUser(userId, productId);
-  //     return { status: 'Product added to user' };
-  //   } catch (error) {
-  //     if (error.message === 'User not found') {
-  //       return { status: 'User not found' };
-  //     }
-  //     if (error.message === 'Product not found') {
-  //       return { status: 'Product not found' };
-  //     }
-  //     return { status: 'Error adding product to user' };
-  //   }
-  // }
-
+  @UseGuards(AuthGuard)
   @Get()
   async getUsers() {
     return await this.userService.getUsers();
   }
 
+  @UseGuards(AuthGuard)
   @Get('/:id')
   async getUserById(@Param('id') id: string) {
     try {
@@ -64,6 +49,7 @@ export class UserController {
     }
   }
 
+  @UseGuards(AuthGuard)
   @Put('/:id')
   async updateUser(@Param('id') id: string, @Body() data: UpdateUserDto) {
     try {
@@ -77,6 +63,7 @@ export class UserController {
     }
   }
 
+  @UseGuards(AuthGuard)
   @Delete('/:id')
   async deleteUser(@Param('id') id: string) {
     try {
