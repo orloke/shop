@@ -3,13 +3,22 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UserService } from '../user/user.service';
 import { AuthDto } from './dto/auth.dto';
 
+interface JwtPayload {
+  email: string;
+  sub: string;
+}
+
 @Injectable()
 export class AuthService {
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private jwtService: JwtService,
+  ) {}
   async login({ email, password }: AuthDto) {
     const user = await this.userService.findUserByEmail(email);
     if (!user) {
@@ -19,6 +28,10 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new UnauthorizedException('Email or password is incorrect');
     }
-    return user;
+
+    const payload: JwtPayload = { email: user.email, sub: user.id };
+    return {
+      access_token: await this.jwtService.signAsync(payload),
+    };
   }
 }
